@@ -1,6 +1,6 @@
 import "./assets/styles/index.scss";
 
-import { Avatar, List } from "antd";
+import { Avatar, List, Row, Col } from "antd";
 
 const data = [
   {
@@ -23,15 +23,14 @@ const App: React.FC = () => (
     dataSource={data}
     renderItem={(item, index) => (
       <List.Item>
-        <List.Item.Meta
-          avatar={
-            <Avatar
-              src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
-            />
-          }
-          title={<a href="https://ant.design">{item.title}</a>}
-          description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-        />
+        <Row className="row" justify="space-between">
+          <Col className="col left-team-text" span={10}>
+            <span>coinName:{item.title}</span>
+          </Col>
+          <Col className="col right-team-text" span={10}>
+            <span>2400.22</span>
+          </Col>
+        </Row>
       </List.Item>
     )}
   />
