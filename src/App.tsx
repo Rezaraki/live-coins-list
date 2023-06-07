@@ -20,10 +20,11 @@ const data = [
 const App: React.FC = () => (
   <List
     itemLayout="horizontal"
+    className="list"
     dataSource={data}
     renderItem={(item, index) => (
       <List.Item>
-        <Row className="row" justify="space-between">
+        <Row className="list-item" justify="space-between">
           <Col className="col left-team-text" span={10}>
             <span>coinName:{item.title}</span>
           </Col>
