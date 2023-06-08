@@ -1,3 +1,4 @@
+import "./assets/styles/index.scss";
 import { useEffect, useState } from "react";
 import { List, Row, Col } from "antd";
 import { ITickersResponse } from "./types/ITickersResponse";
@@ -57,11 +58,11 @@ const App = () => {
   return (
     <List
       itemLayout="horizontal"
-      className="list"
+      className="list "
       dataSource={coins}
       renderItem={(item, index) => (
         <List.Item>
-          <Row className="list-item" justify="space-between">
+          <Row className="list-item w-full" justify="space-between">
             <Col className="col left-team-text" span={10}>
               <span>coinName:{item.symbol}</span>
             </Col>
