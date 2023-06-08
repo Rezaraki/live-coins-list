@@ -58,17 +58,27 @@ const App = () => {
   return (
     <List
       itemLayout="horizontal"
-      className="list "
+      className="coins-list"
       dataSource={coins}
       renderItem={(item, index) => (
         <List.Item>
-          <Row className="list-item w-full" justify="space-between">
-            <Col className="col left-team-text" span={10}>
-              <span>coinName:{item.symbol}</span>
+          <Row className="w-full bg-slate-900 p-0" justify="space-between">
+            <Col className="text-gray-100 " span={10}>
+              <span>{item.symbol}</span>
             </Col>
-            <Col className="col right-team-text" span={10}>
-              <span>{item.lastPrice}</span>
-              <span>{item.PriceChangePercent}</span>
+            <Col className="flex justify-end" span={10}>
+              <div className="flex flex-col">
+                <span className="text-gray-100">{item.lastPrice}</span>
+                <span
+                  className={`${
+                    item.PriceChangePercent.includes("-")
+                      ? "text-red-700"
+                      : "text-green-700"
+                  }`}
+                >
+                  {item.PriceChangePercent}%
+                </span>
+              </div>
             </Col>
           </Row>
         </List.Item>
