@@ -1,10 +1,15 @@
-.list-item {
-  // width: 100%;
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 }
-.list {
-  // width: 100%;
-}
-.coins-list .ant-list-item {
-  padding: 0;
+.coins-list {
   max-width: 390px;
+  .ant-list-item {
+    padding: 0;
+    border: 0;
+  }
 }

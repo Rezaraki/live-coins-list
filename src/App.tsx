@@ -1,74 +1,67 @@
 import "./assets/styles/index.scss";
 import { useEffect, useState } from "react";
-import { List, Row, Col } from "antd";
+import { List, Row, Col, Spin } from "antd";
 import { ITickersResponse } from "./types/ITickersResponse";
+import { ICoins } from "./types/ICoins";
+import { useCoinsSocket } from "./shared/hooks/useCoinsSocket";
 
-const data = [
-  {
-    title: "Ant Design Title 1",
-  },
-  {
-    title: "Ant Design Title 2",
-  },
-  {
-    title: "Ant Design Title 3",
-  },
-  {
-    title: "Ant Design Title 4",
-  },
-];
 const App = () => {
-  const [coins, setCoins] = useState<
-    {
-      symbol: string;
-      PriceChangePercent: string;
-      lastPrice: string;
-    }[]
-  >();
+  const { coins, status } = useCoinsSocket();
+  // const [coins, setCoins] = useState<ICoins[]>();
 
-  useEffect(() => {
-    const ws = new WebSocket("wss://fstream.binance.com/ws/!ticker@arr");
+  // useEffect(() => {
+  //   let ws: WebSocket;
+  //   const connect = () => {
+  //     ws = new WebSocket("wss://fstream.binance.com/ws/!ticker@arr");
 
-    ws.onopen = () => {
-      const payload = {
-        method: "SUBSCRIBE",
-        params: ["!ticker@arr"],
-        id: 1,
-      };
+  //     ws.onopen = () => {
+  //       const payload = {
+  //         method: "SUBSCRIBE",
+  //         params: ["!ticker@arr"],
+  //         id: 1,
+  //       };
 
-      ws.send(JSON.stringify(payload));
-    };
+  //       ws.send(JSON.stringify(payload));
+  //     };
 
-    ws.onmessage = (event) => {
-      console.log(`Received message: ${event}`, event.data);
-      const tickerArr = JSON.parse(event?.data) as ITickersResponse[];
-      const soinsDataArr = tickerArr?.map(({ s, P, c }) => ({
-        symbol: s,
-        PriceChangePercent: P,
-        lastPrice: c,
-      }));
-      setCoins(soinsDataArr);
-    };
+  //     ws.onmessage = (event) => {
+  //       const tickerArr = JSON.parse(event?.data) as ITickersResponse[];
+  //       const soinsDataArr = tickerArr?.map(({ s, P, c }) => ({
+  //         symbol: s,
+  //         PriceChangePercent: P,
+  //         lastPrice: c,
+  //       }));
+  //       setCoins(soinsDataArr);
+  //     };
 
-    return () => {
-      ws.close();
-    };
-  }, []);
+  //     ws.onclose = () => {
+  //       setTimeout(() => {
+  //         connect();
+  //       }, 5000);
+  //     };
+  //   };
+  //   connect();
+  //   return () => {
+  //     ws.close();
+  //   };
+  // }, []);
 
-  return (
+  return coins ? (
     <List
       itemLayout="horizontal"
-      className="coins-list"
+      className="coins-list bg-slate-900"
       dataSource={coins}
-      renderItem={(item, index) => (
+      renderItem={(item) => (
         <List.Item>
           <Row className="w-full bg-slate-900 p-0" justify="space-between">
-            <Col className="text-gray-100 " span={10}>
+            <Col className="text-gray-100 font-semibold pt-2" span={10}>
               <span>{item.symbol}</span>
             </Col>
             <Col className="flex justify-end" span={10}>
               <div className="flex flex-col">
-                <span className="text-gray-100">{item.lastPrice}</span>
+                <span className="text-gray-100 text-right">
+                  {item.lastPrice}
+                </span>
                 <span
                   className={`${
                     item.PriceChangePercent.includes("-")
@@ -84,93 +77,11 @@ const App = () => {
         </List.Item>
       )}
     />
+  ) : (
+    <div className="w-full h-screen bg-slate-900 flex justify-center pt-10">
+      <Spin size="large" />
+    </div>
   );
 };
 
 export default App;
-
-// import "./assets/styles/index.scss";
-// import React, { useState, useEffect } from "react";
-// import { socket } from "./shared/services/socket";
-// // import { ConnectionState } from "./components/ConnectionState";
-// // import { ConnectionManager } from "./components/ConnectionManager";
-// // import { MyForm } from "./components/MyForm";
-// import { Avatar, List, Row, Col } from "antd";
-
-// const data = [
-//   {
-//     title: "Ant Design Title 1",
-//   },
-//   {
-//     title: "Ant Design Title 2",
-//   },
-//   {
-//     title: "Ant Design Title 3",
-//   },
-//   {
-//     title: "Ant Design Title 4",
-//   },
-// ];
-
-// const App: React.FC = () => {
-//   const [isConnected, setIsConnected] = useState(socket.connected);
-//   const [fooEvents, setFooEvents] = useState([]);
-
-//   useEffect(() => {
-//     const payload = { method: "SUBSCRIBE", params: ["!Icker@arr"] };
-
-//     socket.emit("payload", JSON.stringify(payload));
-//     console.log("something");
-//     socket.on("message", (data: unknown) => {
-//       console.log(`Received message: ${data}`, data);
-//     });
-
-//     return () => {
-//       socket.off("message");
-//     };
-//   }, []);
-//   // useEffect(() => {
-//   //   function onConnect() {
-//   //     setIsConnected(true);
-//   //   }
-
-//   //   function onDisconnect() {
-//   //     setIsConnected(false);
-//   //   }
-
-//   //   function onFooEvent(value) {
-//   //     setFooEvents((previous) => [...previous, value]);
-//   //   }
-
-//   //   socket.on("connect", onConnect);
-//   //   socket.on("disconnect", onDisconnect);
-//   //   socket.on("foo", onFooEvent);
-
-//   //   return () => {
-//   //     socket.off("connect", onConnect);
-//   //     socket.off("disconnect", onDisconnect);
-//   //     socket.off("foo", onFooEvent);
-//   //   };
-//   // }, []);
-//   return (
-//     <List
-//       itemLayout="horizontal"
-//       className="list"
-//       dataSource={data}
-//       renderItem={(item, index) => (
-//         <List.Item>
-//           <Row className="list-item" justify="space-between">
-//             <Col className="col left-team-text" span={10}>
-//               <span>coinName:{item.title}</span>
-//             </Col>
-//             <Col className="col right-team-text" span={10}>
-//               <span>2400.22</span>
-//             </Col>
-//           </Row>
-//         </List.Item>
-//       )}
-//     />
-//   );
-// };
-
-// export default App;
