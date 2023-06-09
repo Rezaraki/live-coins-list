@@ -1,8 +1,4 @@
 import "./assets/styles/index.scss";
-import { useEffect, useState } from "react";
-import { List, Row, Col, Spin } from "antd";
-import { ITickersResponse } from "./types/ITickersResponse";
-import { ICoins } from "./types/ICoins";
 import { useCoinsSocket } from "./shared/hooks/useCoinsSocket";
 import { ESocketStatuses } from "./shared/enums/ESocketStatuses";
 import CoinsList from "./components/CoinsList";
