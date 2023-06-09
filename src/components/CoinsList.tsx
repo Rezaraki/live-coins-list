@@ -1,9 +1,6 @@
 import { Col, List, Row } from "antd";
-import { useCoinsSocket } from "../shared/hooks/useCoinsSocket";
-
-const CoinsList = () => {
-  const { coins } = useCoinsSocket();
-
+import { ICoins } from "../types/ICoins";
+const CoinsList = ({ coins }: { coins: ICoins[] | undefined }) => {
   return (
     <List
       itemLayout="horizontal"

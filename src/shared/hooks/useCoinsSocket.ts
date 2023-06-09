@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { ICoins } from "../../types/ICoins";
 import { ITickersResponse } from "../../types/ITickersResponse";
-import { TSocketStatuses } from "../../types/TSocketStatuses";
-import { ESocketStatuses } from "../enums/ESocketStatuses";
+import { makeStatus } from "../utils";
 
 const tickerPayload = {
   method: "SUBSCRIBE",
@@ -32,6 +31,7 @@ export const useCoinsSocket = () => {
         clearInterval(reConnectionIntervalId);
 
         const tickerArr = JSON.parse(event?.data) as ITickersResponse[];
+
         if (Array.isArray(tickerArr)) {
           const soinsDataArr = tickerArr?.map(({ s, P, c }) => ({
             symbol: s,
@@ -41,11 +41,19 @@ export const useCoinsSocket = () => {
           setCoins(soinsDataArr);
         }
       };
+
       ws.onerror = (error) => {
         console.error("WebSocket error:", error);
       };
-      ws.onclose = () => {
+
+      ws.onclose = (error) => {
         setInnerStatus(false);
+        console.error(
+          "connection lost with code:",
+          error.code,
+          "due to:",
+          error.reason
+        );
         reConnectionIntervalId = setInterval(() => connect(), 5000);
       };
     };
@@ -54,21 +62,7 @@ export const useCoinsSocket = () => {
       ws.close();
     };
   }, []);
+  const status = makeStatus(coins, innerStatus);
 
-  let status: TSocketStatuses = ESocketStatuses.connecting;
-  switch (true) {
-    case coins && innerStatus:
-      status = ESocketStatuses.connected;
-      break;
-    case coins && !innerStatus:
-      status = ESocketStatuses.disConnected;
-      break;
-    case !coins && innerStatus:
-      status = ESocketStatuses.error;
-      break;
-    case !coins && !innerStatus: //innitial connection
-      status = ESocketStatuses.connecting;
-      break;
-  }
   return { coins, status };
 };
