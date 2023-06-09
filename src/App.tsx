@@ -4,49 +4,13 @@ import { List, Row, Col, Spin } from "antd";
 import { ITickersResponse } from "./types/ITickersResponse";
 import { ICoins } from "./types/ICoins";
 import { useCoinsSocket } from "./shared/hooks/useCoinsSocket";
+import { ESocketStatuses } from "./shared/enums/ESocketStatuses";
+import CoinsList from "./components/CoinsList";
 
 const App = () => {
   const { coins, status } = useCoinsSocket();
-  // const [coins, setCoins] = useState<ICoins[]>();
 
-  // useEffect(() => {
-  //   let ws: WebSocket;
-  //   const connect = () => {
-  //     ws = new WebSocket("wss://fstream.binance.com/ws/!ticker@arr");
-
-  //     ws.onopen = () => {
-  //       const payload = {
-  //         method: "SUBSCRIBE",
-  //         params: ["!ticker@arr"],
-  //         id: 1,
-  //       };
-
-  //       ws.send(JSON.stringify(payload));
-  //     };
-
-  //     ws.onmessage = (event) => {
-  //       const tickerArr = JSON.parse(event?.data) as ITickersResponse[];
-  //       const soinsDataArr = tickerArr?.map(({ s, P, c }) => ({
-  //         symbol: s,
-  //         PriceChangePercent: P,
-  //         lastPrice: c,
-  //       }));
-  //       setCoins(soinsDataArr);
-  //     };
-
-  //     ws.onclose = () => {
-  //       setTimeout(() => {
-  //         connect();
-  //       }, 5000);
-  //     };
-  //   };
-  //   connect();
-  //   return () => {
-  //     ws.close();
-  //   };
-  // }, []);
-
-  return coins ? (
+  const coinsList = (
     <List
       itemLayout="horizontal"
       className="coins-list bg-slate-900"
@@ -77,11 +41,27 @@ const App = () => {
         </List.Item>
       )}
     />
-  ) : (
+  );
+  const spinner = (
     <div className="w-full h-screen bg-slate-900 flex justify-center pt-10">
       <Spin size="large" />
     </div>
   );
+  const disconnected = (
+    <div className="w-full h-3 bg-slate-600 text-gray-300 flex justify-center  ">
+      disconnected trying to fetch data.
+    </div>
+  );
+
+  if (status === ESocketStatuses.connected) return <CoinsList />;
+  if (status === ESocketStatuses.disConnected)
+    return (
+      <>
+        {disconnected}
+        {coinsList}
+      </>
+    );
+  return spinner;
 };
 
 export default App;
